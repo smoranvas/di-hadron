@@ -1,0 +1,16 @@
+These are the codes to produced this files, are meant to be implemented in Santa Maria cluster.
+
+INSTRUCTIONS TO RUN THE CODE IN SMU CLUSTER:
+
+1)  There are two different set of script in this directory, one for data and one for simulations, with labels 'data' and 'sim' respectively. 
+2)  The master scripts are called 'send_all_data.sh' and 'send_all_sim.sh'. These scripts send all the data/simulation files for all targets.
+3)  The scripts 'send_jobs_data.sh' and 'send_jobs_sim.sh' are just to send and resend jobs when it is needed. Santa Maria cluster only allows a certain amount of jobs, so this scripts keep re-sending jobs until the system accept it.
+4)  The scripts 'dataJob.slurm' and 'simJob.slurm' contains all te info about the job, in/out directories and so on. This is the one that we should edit at convenience.
+5)  The three folders are:
+	include: here are all the libraries neccessary to run the codes. Specially important is the file 'TIdentificatorV2.h'. This file conatins all the info about the PID and the definition of the variables. Also 'GetSimpleTuple_data.hxx' and 'GetSimpleTuple_sim.hxx', they contains the info about the particles we want to save in our exit files.
+	src: contains the files for data and sim, they contain the info about the input and output file names. Not really neccessary to modified these.
+	bin: here is were the executables are stored
+6)  Some tips: If you modified or add something in the TIdentificatorV2.h file or any other file the safest thing to do to compile is to clear fisrt and then do the 'make': make clear; make
+	       I found particularly useful to use the 'screen' command to run this. 
+	
+	
