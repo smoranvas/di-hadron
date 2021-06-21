@@ -20,7 +20,6 @@ def getRatio(df_A,df_D,df_trigger_A,df_trigger_D, variable='h2_z',trig_cut = 'h1
     error_conditional = np.multiply(ratio_conditional, np.sqrt(np.power(err_A,2.0) + np.power(err_D,2.0)))
     return ratio_conditional,error_conditional,x_conditional
 
-
 def getMultiplicity(df,df_trigger, variable='h2_z',trig_cut = 'h1_z>0.5', pair_cut='',minz=0.05,maxz=0.5,nbins=9, applyweight=False):
     norm = df_trigger.query(trig_cut).shape[0]
     bins= np.linspace(minz,maxz,nbins)
