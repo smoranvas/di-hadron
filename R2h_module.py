@@ -78,7 +78,6 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False):
         print ('This is MC')
     else: 
         print ('This is Data')
-    
     dataframe = fullDataframe
     dataframe.eval('z_tot = h1_z+ h2_z', inplace=True)
     dataframe.eval('h1_e = h1_z*nu', inplace=True)
