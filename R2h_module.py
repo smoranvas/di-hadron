@@ -92,6 +92,9 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
     dataframe = applyCut(dataframe, 'nu>2.2 and nu<4.2', '2.2 < nu < 4.2')
     dataframe = applyCut(dataframe, 'h1_p<5.0', 'h1_p<5 GeV ')
     dataframe = applyCut(dataframe, 'h2_p<5.0', 'h2_p<5 GeV')
+    if 'pair_pt' not in dataframe.columns:
+        dataframe.eval('pair_pt = sqrt(h1_cm_pt**2+h2_cm_pt**2+2*h2_cm_pt*h1_cm_pt*cos(h1_cm_ph-h2_cm_ph))', inplace=True)
+    
     dataframe.eval('pair_pt2 = pair_pt*pair_pt', inplace=True)
     if h2Proton :
         dataframe = applyCut(dataframe, 'h2_pid==2212', 'secondary hadrons are protons') 
@@ -104,15 +107,21 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
     ## Theta cuts are not applied in the GiBUU case
     ## For GiBUU case is the only time isMC=True
     if (not isMC):
+        #convert to degrees if necessary
+        if max(dataframe['h2_th'])<np.pi:
+            dataframe['h2_th'] = dataframe['h2_th']*180/np.pi
+        if max(dataframe['h1_th'])<np.pi:
+            dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
+            
         dataframe = applyCut(dataframe, 'h2_th<120 and h2_th>10', '10<h2_th<120')
         dataframe = applyCut(dataframe, '(h2_pid>0) | (h2_pid==-211 & h2_th>25 & h2_th<90) | (h2_pid==-211 & h2_th<40 & h2_th>25 & h2_p>0.5)','Theta/P fiducial region selected')
         dataframe = applyCut(dataframe, 'h1_th<120 and h1_th>10', '10< h1_th<120')
         dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th>25 & h1_th<90) | (h1_pid==-211 & h1_th<40 & h1_th>25 & h1_p>0.5)','Theta/P fiducial region selected for trigger')
         if (nomCuts):
             if h2Proton:
-                dataframe = applyCut(dataframe, pair_cut_nom, 'Nom cuts for the pair applied (pi pi)')
-            else :
                 dataframe = applyCut(dataframe, pair_cut_nom_pi_p, 'Nom cuts for the pair applied (pi p)')
+            else :
+                dataframe = applyCut(dataframe, pair_cut_nom, 'Nom cuts for the pair applied (pi pi)')
     return dataframe
 
 def printPairBreakdown(dataframe,h2Proton=True):
