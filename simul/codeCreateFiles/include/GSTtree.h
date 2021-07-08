@@ -96,6 +96,7 @@ struct rec_p {
   std::vector<Float_t> ZEC;       //
   std::vector<Int_t> pid;         // particle ID number (according to PDG)
   std::vector<Float_t> T4;        //
+  std::vector<Float_t> T4_pi;     // T4, assuming the mass of a charged pion
   std::vector<Float_t> deltaZ;    //
   std::vector<Float_t> StatDC;    //
   std::vector<Float_t> DCStatus;  //
