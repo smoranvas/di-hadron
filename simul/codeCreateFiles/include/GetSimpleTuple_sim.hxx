@@ -18,7 +18,11 @@ void FindParticles(TClasTool* input, TIdentificatorV2* t, RVec<Int_t>& gsim_row,
       for (Int_t q = 1; q < input->GetNRows("GSIM"); q++) {
         if (t->Id(q, 1) == gPiPlusID || 
 	    t->Id(q, 1) == gPiMinusID || 
-	    t->Id(q, 1) == gProtonID 
+	    t->Id(q, 1) == gProtonID ||                                                                                        
+	    t->Id(q, 1) == gKaonPlusID ||                                                                                       
+	    t->Id(q, 1) == gKaonMinusID ||                                                                                      
+	    t->Id(q, 1) == gElectronID ||                                                                                  
+	    t->Id(q, 1) == gPositronID 
 	 /*
 	   || t->Id(q, 1) == gGammaID || 
 	      t->Id(q, 1) == gElectronID || 
@@ -76,8 +80,11 @@ void AngularMatching(TIdentificatorV2* t, RVec<Int_t>& simrec_row, RVec<Int_t>& 
   // measured values: (worst from pi+ with 0 < P < 0.35 GeV)
   //       fDeltaThetaLab = 0.78, fDeltaPhiLab = 1.41
   // worst from electron (CLAS paper @ P = 0.1 GeV):
-  const Double_t fDeltaThetaLab = 2.40;  // Delta_Theta = 3*sigma_Theta
-  const Double_t fDeltaPhiLab = 5.43;    // Delta_Phi = 3*sigma_Phi
+  //const Double_t fDeltaThetaLab = 2.40;  // Delta_Theta = 3*sigma_Theta
+  //const Double_t fDeltaPhiLab = 5.43;    // Delta_Phi = 3*sigma_Phi
+  const Double_t fDeltaThetaLab = 2.40*5/3.;  // Delta_Theta = 5*sigma_Theta                                                    
+  const Double_t fDeltaPhiLab = 5.43*5/3.;    // Delta_Phi = 5*sigma_Phi 
+
 
   // define output vectors - initially empty
   RVec<Int_t> simrec_new;
