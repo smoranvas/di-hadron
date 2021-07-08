@@ -545,6 +545,7 @@ void NullParticleVar_REC(rec_p& rec) {
   rec.Nphe.push_back(INVLD);
   rec.Chi2CC.push_back(INVLD);
   rec.FidCheckCutPiPlus.push_back(INVLD);
+  rec.FidCheckCut.push_back(INVLD);
   
   
   //rec.StatDC.push_back(INVLD);
