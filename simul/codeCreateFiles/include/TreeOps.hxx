@@ -511,7 +511,7 @@ void NullElectronVar_REC(rec_p& rec) {
 void NullParticleVar_REC(rec_p& rec) {
   // reconstructed particles (49 variables)
   rec.pid.push_back(INVLD);
-  //rec.Eh.push_back(INVLD);
+  rec.Eh.push_back(INVLD);
   rec.Zh.push_back(INVLD);
   rec.ThetaPQ.push_back(INVLD);
   rec.PhiPQ.push_back(INVLD);
