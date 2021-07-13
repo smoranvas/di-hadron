@@ -534,7 +534,7 @@ void NullParticleVar_REC(rec_p& rec) {
   rec.Betta.push_back(INVLD);
   rec.SampFraction25.push_back(INVLD);
   rec.SampFraction20.push_back(INVLD);
-  rec.CCMirrorMatching.pushback(INVLD);
+  rec.CCMirrorMatching.push_back(INVLD);
   rec.Mass2.push_back(INVLD);
   rec.Etot.push_back(INVLD);
   rec.Ein.push_back(INVLD);
