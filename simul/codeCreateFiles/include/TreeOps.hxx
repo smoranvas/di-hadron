@@ -413,7 +413,7 @@ void AssignParticleVar_GEN(TIdentificatorV2* t, gen_p& mc, Int_t row) {
   mc.Zh.push_back(t->Zh(row, 1, fMass));
   //mc.Eh.push_back(fE);
   mc.Mx2.push_back(t->Mx2(row, 1, fMass));
-  //mc.T.push_back(t->T(row, 1, fMass));
+  mc.T.push_back(t->T(row, 1, fMass));
   mc.ThetaLab.push_back(t->ThetaLab(row, 1));
   mc.PhiLab.push_back(t->PhiLab(row, 1));
   mc.vxh.push_back(t->X(row, 1));
@@ -425,7 +425,7 @@ void AssignParticleVar_GEN(TIdentificatorV2* t, gen_p& mc, Int_t row) {
   mc.Pz.push_back(t->Pz(row, 1));
   mc.P.push_back(t->Momentum(row, 1));
   mc.Betta.push_back(t->Betta(row, 1));
-  //mc.Mass2.push_back(t->Mass2(row, 1));
+  mc.Mass2.push_back(t->Mass2(row, 1));
   mc.deltaZ.push_back(t->Z(row, 1) - t->Z(0, 1));
 }
 
@@ -532,6 +532,9 @@ void NullParticleVar_REC(rec_p& rec) {
   rec.Pz.push_back(INVLD);
   rec.P.push_back(INVLD);
   rec.Betta.push_back(INVLD);
+  rec.SampFraction25.push_back(INVLD);
+  rec.SampFraction20.push_back(INVLD);
+  rec.CCMirrorMatching.pushback(INVLD);
   rec.Mass2.push_back(INVLD);
   rec.Etot.push_back(INVLD);
   rec.Ein.push_back(INVLD);
