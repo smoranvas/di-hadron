@@ -116,10 +116,10 @@ void AngularMatching(TIdentificatorV2* t, RVec<Int_t>& simrec_row, RVec<Int_t>& 
 
       /*** MATCHING CONDITION ***/
       double dphi =simrec_phi - gsim_phi;
-      if(dphi > 3.1415926535)
-        dphi -= 2*3.1415926535;
-      if(dphi < -3.1415926535)
-          dphi += 2*3.1415926535;
+      if(dphi > 180)
+        dphi -= 360;
+      if(dphi < -180)
+	dphi += 360;
       Bool_t fAngularMatching = TMath::Abs(dphi) < fDeltaPhiLab && TMath::Abs(simrec_theta - gsim_theta) < fDeltaThetaLab;
       if (fAngularMatching && std::find(gsim_new.begin(), gsim_new.end(), gsim_row[m]) == gsim_new.end() &&
           std::find(simrec_new.begin(), simrec_new.end(), simrec_row[n]) == simrec_new.end()) {
