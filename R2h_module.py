@@ -74,7 +74,8 @@ def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=Fa
         dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
     if (not isMC):
         dataframe = applyCut(dataframe, 'h1_th<120 and h1_th>10', '10< h1_th<120')
-        dataframe = applyCut(dataframe, '(h1_pid==211) | (h1_pid==-211 & h1_th>25 & h1_th<90) | (h1_pid==-211 & h1_th<40 & h1_th>25 & h1_p>0.5)','Theta/P fiducial region selected for trigger')
+        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger')
+        #dataframe = applyCut(dataframe, '(h1_pid==211) | (h1_pid==-211 & h1_th>25 & h1_th<90) | (h1_pid==-211 & h1_th<40 & h1_th>25 & h1_p>0.5)','Theta/P fiducial region selected for trigger')
         if (nomCuts):    dataframe = applyCut(dataframe,trigger_cut_nom, 'Nom cuts for the trigger applied')
         
     return dataframe
@@ -122,9 +123,9 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
             dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
             
         dataframe = applyCut(dataframe, 'h2_th<120 and h2_th>10', '10<h2_th<120')
-        dataframe = applyCut(dataframe, '(h2_pid>0) | (h2_pid==-211 & h2_th>25 & (h2_th<90 & h2_p<0.5 | h2_th<40))','Theta/P fiducial region selected')
+        dataframe = applyCut(dataframe, '(h2_pid>0) | (h2_pid==-211 & h2_th<90 & h2_th>25 & (h2_p>0.5 | h2_th>40))','Theta/P fiducial region selected')
         dataframe = applyCut(dataframe, 'h1_th<120 and h1_th>10', '10< h1_th<120')
-        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th>25 & (h1_th<90 & h1_p<0.5 | h1_th<40))','Theta/P fiducial region selected for trigger')
+        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger')
         if (nomCuts):
             if h2Proton:
                 dataframe = applyCut(dataframe, pair_cut_nom_pi_p, 'Nom cuts for the pair applied (pi p)')
