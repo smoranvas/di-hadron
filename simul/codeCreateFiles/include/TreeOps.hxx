@@ -88,6 +88,7 @@ void SetOutputBranches_REC(TTree* tree, rec_p& rec) {
   tree->Branch("Betta", &rec.Betta);
   tree->Branch("pid", &rec.pid);
   tree->Branch("T4", &rec.T4);
+  tree->Branch("T4_pi", &rec.T4_pi);
   tree->Branch("deltaZ", &rec.deltaZ);
   tree->Branch("Nphe", &rec.Nphe);
   tree->Branch("evnt", &rec.evnt); 
@@ -256,6 +257,8 @@ void AssignParticleVar_REC(TIdentificatorV2* t, rec_p& rec, Int_t row) {
   rec.Ein.push_back(t->Ein(row));
   rec.Eout.push_back(t->Eout(row));
   Double_t fMass = particleMass(fPid);
+  //mass of pion (so that T4 assuming pion, ie T4_pi, can be added to the tuple)
+  Double_t fMassPi = particleMass(211);
   TLorentzVector* fGamma = t->GetCorrPhotonMomentum(row);
   Double_t fPx = (fPid == 22) * fGamma->Px() + (fPid != 22) * t->Px(row);
   Double_t fPy = (fPid == 22) * fGamma->Py() + (fPid != 22) * t->Py(row);
@@ -282,6 +285,7 @@ void AssignParticleVar_REC(TIdentificatorV2* t, rec_p& rec, Int_t row) {
   rec.Betta.push_back(t->Betta(row));  // BettaMeasured
   rec.Mass2.push_back(fP * fP * (TMath::Power(t->Betta(row), -2) - 1));
   rec.T4.push_back(t->PathSC(0) / 30. - t->TimeSC(0) + t->TimeSC(row) - (t->PathSC(row) / 30.) * TMath::Sqrt(TMath::Power(fMass / fP, 2) + 1));
+  rec.T4_pi.push_back(t->PathSC(0) / 30. - t->TimeSC(0) + t->TimeSC(row) - (t->PathSC(row) / 30.) * TMath::Sqrt(TMath::Power(fMassPi / fP, 2) + 1));
   rec.FidCheckCutPiPlus.push_back(t->FidCheckCutPiPlus(row)); // added by smoran
   rec.Nphe.push_back(t->Nphe(row));
   rec.Chi2CC.push_back(t->Chi2CC(row));
@@ -343,6 +347,7 @@ void ClearParticleVar_REC(rec_p& rec) {
   rec.Betta.clear();
   rec.Mass2.clear();
   rec.T4.clear();
+  rec.T4_pi.clear();
   rec.StatCC.clear();
   rec.FidCheckCutPiPlus.clear();
   rec.Nphe.clear();
@@ -408,7 +413,7 @@ void AssignParticleVar_GEN(TIdentificatorV2* t, gen_p& mc, Int_t row) {
   mc.Zh.push_back(t->Zh(row, 1, fMass));
   //mc.Eh.push_back(fE);
   mc.Mx2.push_back(t->Mx2(row, 1, fMass));
-  //mc.T.push_back(t->T(row, 1, fMass));
+  mc.T.push_back(t->T(row, 1, fMass));
   mc.ThetaLab.push_back(t->ThetaLab(row, 1));
   mc.PhiLab.push_back(t->PhiLab(row, 1));
   mc.vxh.push_back(t->X(row, 1));
@@ -420,7 +425,7 @@ void AssignParticleVar_GEN(TIdentificatorV2* t, gen_p& mc, Int_t row) {
   mc.Pz.push_back(t->Pz(row, 1));
   mc.P.push_back(t->Momentum(row, 1));
   mc.Betta.push_back(t->Betta(row, 1));
-  //mc.Mass2.push_back(t->Mass2(row, 1));
+  mc.Mass2.push_back(t->Mass2(row, 1));
   mc.deltaZ.push_back(t->Z(row, 1) - t->Z(0, 1));
 }
 
@@ -506,7 +511,7 @@ void NullElectronVar_REC(rec_p& rec) {
 void NullParticleVar_REC(rec_p& rec) {
   // reconstructed particles (49 variables)
   rec.pid.push_back(INVLD);
-  //rec.Eh.push_back(INVLD);
+  rec.Eh.push_back(INVLD);
   rec.Zh.push_back(INVLD);
   rec.ThetaPQ.push_back(INVLD);
   rec.PhiPQ.push_back(INVLD);
@@ -517,6 +522,7 @@ void NullParticleVar_REC(rec_p& rec) {
   rec.ThetaLab.push_back(INVLD);
   rec.PhiLab.push_back(INVLD);
   rec.T4.push_back(INVLD);
+  rec.T4_pi.push_back(INVLD);
   rec.vxh.push_back(INVLD);
   rec.vyh.push_back(INVLD);
   rec.vzh.push_back(INVLD);
@@ -526,6 +532,9 @@ void NullParticleVar_REC(rec_p& rec) {
   rec.Pz.push_back(INVLD);
   rec.P.push_back(INVLD);
   rec.Betta.push_back(INVLD);
+  rec.SampFraction25.push_back(INVLD);
+  rec.SampFraction20.push_back(INVLD);
+  rec.CCMirrorMatching.push_back(INVLD);
   rec.Mass2.push_back(INVLD);
   rec.Etot.push_back(INVLD);
   rec.Ein.push_back(INVLD);
@@ -539,6 +548,7 @@ void NullParticleVar_REC(rec_p& rec) {
   rec.Nphe.push_back(INVLD);
   rec.Chi2CC.push_back(INVLD);
   rec.FidCheckCutPiPlus.push_back(INVLD);
+  rec.FidCheckCut.push_back(INVLD);
   
   
   //rec.StatDC.push_back(INVLD);
