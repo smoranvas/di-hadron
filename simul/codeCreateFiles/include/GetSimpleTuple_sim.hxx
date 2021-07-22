@@ -16,23 +16,23 @@ void FindParticles(TClasTool* input, TIdentificatorV2* t, RVec<Int_t>& gsim_row,
 
     if (t->Id(0, 1) == gElectronID) {
       for (Int_t q = 1; q < input->GetNRows("GSIM"); q++) {
-        if (t->Id(q, 1) == gPiPlusID || 
-	    t->Id(q, 1) == gPiMinusID || 
-	    t->Id(q, 1) == gProtonID ||                                                                                        
-	    t->Id(q, 1) == gKaonPlusID ||                                                                                       
-	    t->Id(q, 1) == gKaonMinusID ||                                                                                      
-	    t->Id(q, 1) == gElectronID ||                                                                                  
-	    t->Id(q, 1) == gPositronID 
+        if (t->Id(q, 1) == gPiPlusID ||
+	    t->Id(q, 1) == gPiMinusID ||
+	    t->Id(q, 1) == gProtonID ||
+	    t->Id(q, 1) == gKaonPlusID ||
+	    t->Id(q, 1) == gKaonMinusID ||
+	    t->Id(q, 1) == gElectronID ||
+	    t->Id(q, 1) == gPositronID
 	 /*
-	   || t->Id(q, 1) == gGammaID || 
-	      t->Id(q, 1) == gElectronID || 
+	   || t->Id(q, 1) == gGammaID ||
+	      t->Id(q, 1) == gElectronID ||
 	      t->Id(q, 1) == gPositronID ||
-              t->Id(q, 1) == gProtonID || 
-	      t->Id(q, 1) == gNeutronID || 
-	      t->Id(q, 1) == gKaonPlusID || 
-	      t->Id(q, 1) == gKaonMinusID || 
+              t->Id(q, 1) == gProtonID ||
+	      t->Id(q, 1) == gNeutronID ||
+	      t->Id(q, 1) == gKaonPlusID ||
+	      t->Id(q, 1) == gKaonMinusID ||
 	      t->Id(q, 1) == gKaonZeroLongID ||
-              t->Id(q, 1) == gKaonZeroShortID || 
+              t->Id(q, 1) == gKaonZeroShortID ||
 	      t->Id(q, 1) == gKaonZeroID
 	 */   ) {
           gsim_row.push_back(q);
@@ -42,7 +42,7 @@ void FindParticles(TClasTool* input, TIdentificatorV2* t, RVec<Int_t>& gsim_row,
       if (input->GetNRows("EVNT") > 0) {  // prevent seg-fault
         if (t->GetCategorization(0, gDataKind, gTargetOption) == "electron") {
           for (Int_t p = 1; p < input->GetNRows("EVNT"); p++) {
-            if (t->GetCategorization(p, gDataKind, gTargetOption) == "pi+" || 
+            if (t->GetCategorization(p, gDataKind, gTargetOption) == "pi+" ||
 	        t->GetCategorization(p, gDataKind, gTargetOption) == "pi-" ||
                 t->GetCategorization(p, gDataKind, gTargetOption) == "proton") {
               simrec_row.push_back(p);
@@ -82,8 +82,8 @@ void AngularMatching(TIdentificatorV2* t, RVec<Int_t>& simrec_row, RVec<Int_t>& 
   // worst from electron (CLAS paper @ P = 0.1 GeV):
   //const Double_t fDeltaThetaLab = 2.40;  // Delta_Theta = 3*sigma_Theta
   //const Double_t fDeltaPhiLab = 5.43;    // Delta_Phi = 3*sigma_Phi
-  const Double_t fDeltaThetaLab = 2.40*5/3.;  // Delta_Theta = 5*sigma_Theta                                                    
-  const Double_t fDeltaPhiLab = 5.43*5/3.;    // Delta_Phi = 5*sigma_Phi 
+  const Double_t fDeltaThetaLab = 2.40*5/3.;  // Delta_Theta = 5*sigma_Theta
+  const Double_t fDeltaPhiLab = 5.43*5/3.;    // Delta_Phi = 5*sigma_Phi
 
 
   // define output vectors - initially empty
@@ -115,12 +115,12 @@ void AngularMatching(TIdentificatorV2* t, RVec<Int_t>& simrec_row, RVec<Int_t>& 
       simrec_theta = ThetaLab(fPx, fPy, fPz);
 
       /*** MATCHING CONDITION ***/
-      double dphi =simrec_phi - gsim_phi;
-      if(dphi > 180)
-        dphi -= 360;
-      if(dphi < -180)
-	dphi += 360;
-      Bool_t fAngularMatching = TMath::Abs(dphi) < fDeltaPhiLab && TMath::Abs(simrec_theta - gsim_theta) < fDeltaThetaLab;
+
+      Double_t dphi = simrec_phi - gsim_phi;
+      Double_t dtheta = simrec_theta - gsim_theta;
+
+      Bool_t fAngularMatching = TMath::Abs(dphi) < fDeltaPhiLab && TMath::Abs(dtheta) < fDeltaThetaLab;
+
       if (fAngularMatching && std::find(gsim_new.begin(), gsim_new.end(), gsim_row[m]) == gsim_new.end() &&
           std::find(simrec_new.begin(), simrec_new.end(), simrec_row[n]) == simrec_new.end()) {
         // std::find function returns an iterator to the first element in the range ["begin","end"[ that compares equal to "row"
@@ -191,5 +191,5 @@ void FillElectronNParticles(TIdentificatorV2* t, TClasTool* input, TTree* tParti
 
   tParticles->Fill();
   ClearParticleVar_GEN(mc);
-  ClearParticleVar_REC(rec);  
+  ClearParticleVar_REC(rec);
 }
