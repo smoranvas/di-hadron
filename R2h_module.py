@@ -40,6 +40,20 @@ def applyCut(inputDataframe, cut, text=None):
             print (text, cutDataframe.shape[0], ' (%2.2f '%(100.0*cutDataframe.shape[0]/nbeforecut), '%)')
     return cutDataframe
 
+# defining the limits and number of bins for each variable.
+dpionMassBinsEdges=11
+maxzmass=1.7
+minzmass=0.3
+
+dpiondphiBinsEdges=9
+maxdphi=3.14
+mindphi=0.0
+
+dpionz2BinsEdges=9
+maxz2=0.45
+minz2=0.05
+
+
 p_thr=2.7
 Nphe_thr=15
 Nphe_h1_cut='h1_Nphe> (%d*( (h1_z*nu*h1_z*nu-0.13957*0.13957)>(%f*%f) and h1_pid==211 ) -10000* (not ( (h1_z*nu*h1_z*nu-0.13957*0.13957)>(%f*%f) and h1_pid==211 ) ) )'%(Nphe_thr,p_thr,p_thr,p_thr,p_thr)
@@ -50,9 +64,9 @@ StatCC_h1_cut='h1_StatCC>((( (h1_z*nu*h1_z*nu-0.13957*0.13957)>(%f*%f) and h1_pi
 StatCC_h2_cut='h2_StatCC>((( (h2_z*nu*h2_z*nu-0.13957*0.13957)>(%f*%f) and h2_pid==211 ) -1 ))'%(p_thr,p_thr)
 
 trigger_cut_nom   ='h1_z>0.5 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and h1_FidCutPiPlus==1 and %s and %s and %s  '%(Nphe_h1_cut, Chi2CC_h1_cut,StatCC_h1_cut)
-pair_cut_nom  ='h1_z>0.5 and abs(h2_deltaZ)<3.0 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and %s and %s and %s and %s and %s and %s and h1_FidCutPiPlus==1 and h2_FidCutPiPlus==1 and h1_z+h2_z<1'%(Nphe_h1_cut, Nphe_h2_cut,Chi2CC_h1_cut,Chi2CC_h2_cut,StatCC_h1_cut, StatCC_h2_cut)
+pair_cut_nom  ='h1_z>0.5 and abs(h2_deltaZ)<3.0 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and %s and %s and %s and %s and %s and %s and h1_FidCutPiPlus==1 and h2_FidCutPiPlus==1 and (h1_z+h2_z)<1.0'%(Nphe_h1_cut, Nphe_h2_cut,Chi2CC_h1_cut,Chi2CC_h2_cut,StatCC_h1_cut, StatCC_h2_cut)
 
-pair_cut_nom_pi_p  ='h1_z>0.5 and abs(h2_deltaZ)<3.0 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and %s and %s and %s'%(Nphe_h1_cut,Chi2CC_h1_cut,StatCC_h1_cut)
+pair_cut_nom_pi_p  ='h1_z>0.5 and abs(h2_deltaZ)<3.0 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and h1_FidCutPiPlus==1 and h2_FidCutPiPlus==1 and %s and %s and %s'%(Nphe_h1_cut,Chi2CC_h1_cut,StatCC_h1_cut)
 
 
 def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=False): 
@@ -65,10 +79,10 @@ def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=Fa
     if 'h1_Betta' in dataframe.columns:
         dataframe.eval('h1_mass_TOF = h1_p/h1_Betta*sqrt(1-h1_Betta**2)', inplace=True)
     dataframe = applyCut(dataframe, 'Q2>1.0 and Q2<4.0', 'Q2>1.0 and Q2<4.0')
-    dataframe = applyCut(dataframe, 'h1_p <5.0 ', 'h1_p<5.0 ')
+    dataframe = applyCut(dataframe, 'h1_p <5.0 and h1_p>0.2 ', '0.2<h1_p<5.0 ')
     dataframe = applyCut(dataframe, 'inelasticity<0.85','inelasticity < 0.85')
     dataframe = applyCut(dataframe, 'abs(h1_pid)==211', 'h1_pid = pions (trigger)')
-    dataframe = applyCut(dataframe, 'nu>2.2 and nu<4.2', 'Nu>2.2 and Nu<4.2')
+    dataframe = applyCut(dataframe, 'nu>2.2 and nu<4.2', '2.2 < nu <4.2')
     
     if max(dataframe['h1_th'])<np.pi:
         dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
@@ -97,10 +111,9 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
     if 'h1_Betta' in dataframe.columns:
         dataframe.eval('h1_mass2_TOF = h1_p**2/h1_Betta**2*(1-h1_Betta**2)', inplace=True)
         dataframe.eval('h2_mass2_TOF = h2_p**2/h2_Betta**2*(1-h2_Betta**2)', inplace=True)
-    dataframe = applyCut(dataframe, 'Q2>1.0 and Q2<4.0', 'Q2>1.0 :')
+    dataframe = applyCut(dataframe, 'Q2>1.0 and Q2<4.0', '1.0< Q2 <4.0')
     dataframe = applyCut(dataframe, 'nu>2.2 and nu<4.2', '2.2 < nu < 4.2')
-    #dataframe = applyCut(dataframe, 'h1_p<5.0', 'h1_p<5 GeV ')
-    #dataframe = applyCut(dataframe, 'h2_p<5.0', 'h2_p<5 GeV')
+
     if 'pair_pt' not in dataframe.columns:
         dataframe.eval('pair_pt = sqrt(h1_cm_pt**2+h2_cm_pt**2+2*h2_cm_pt*h1_cm_pt*cos(h1_cm_ph-h2_cm_ph))', inplace=True)
     
@@ -109,6 +122,7 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
         dataframe = applyCut(dataframe, 'h2_pid==2212', 'secondary hadrons are protons') 
     else :
         dataframe = applyCut(dataframe, 'abs(h2_pid)==211', 'secondary hadrons are pions') 
+        dataframe = applyCut(dataframe, '(h1_z+h2_z)<1.0', '(h1_z+h2_z)<1.0')
     dataframe = applyCut(dataframe, 'abs(h1_pid)==211', 'leading hadrons are pions')    
     dataframe = applyCut(dataframe, 'h2_p>0.2 and h2_p<5.0', '0.2<h2_p<5.0')
     dataframe = applyCut(dataframe, 'h1_p>0.2 and h1_p<5.0', '0.2<h1_p<5.0')
@@ -123,9 +137,9 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
             dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
             
         dataframe = applyCut(dataframe, 'h2_th<120 and h2_th>10', '10<h2_th<120')
-        dataframe = applyCut(dataframe, '(h2_pid>0) | (h2_pid==-211 & h2_th<90 & h2_th>25 & (h2_p>0.5 | h2_th>40))','Theta/P fiducial region selected')
+        dataframe = applyCut(dataframe, '(h2_pid>0) | (h2_pid==-211 & h2_th<90 & h2_th>25 & (h2_p>0.5 | h2_th>40))','Theta/P fiducial region selected for secondary hadron')
         dataframe = applyCut(dataframe, 'h1_th<120 and h1_th>10', '10< h1_th<120')
-        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger')
+        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger hadron')
         if (nomCuts):
             if h2Proton:
                 dataframe = applyCut(dataframe, pair_cut_nom_pi_p, 'Nom cuts for the pair applied (pi p)')
