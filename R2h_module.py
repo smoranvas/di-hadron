@@ -87,7 +87,7 @@ def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=Fa
     if max(dataframe['h1_th'])<np.pi:
         dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
     if (not isMC):
-        dataframe = applyCut(dataframe, 'h1_th<120 and h1_th>10', '10< h1_th<120')
+        dataframe = applyCut(dataframe, 'h1_th<90 and h1_th>10', '10< h1_th<90')
         dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger')
         #dataframe = applyCut(dataframe, '(h1_pid==211) | (h1_pid==-211 & h1_th>25 & h1_th<90) | (h1_pid==-211 & h1_th<40 & h1_th>25 & h1_p>0.5)','Theta/P fiducial region selected for trigger')
         if (nomCuts):    dataframe = applyCut(dataframe,trigger_cut_nom, 'Nom cuts for the trigger applied')
