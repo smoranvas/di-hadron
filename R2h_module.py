@@ -123,6 +123,10 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
     else :
         dataframe = applyCut(dataframe, 'abs(h2_pid)==211', 'secondary hadrons are pions') 
         dataframe = applyCut(dataframe, '(h1_z+h2_z)<1.0', '(h1_z+h2_z)<1.0')
+        dataframe = applyCut(dataframe, '(h1_pid*h2_pid)<0.', '(h1_pid*h2_pid)<0, opposite charge pions')
+        dataframe = applyCut(dataframe, 'h2_z > %f and h2_z< %f'%(minz2,maxz2), 'kinematic limits for h2_z')
+        dataframe = applyCut(dataframe, 'dphi > %f and dphi< %f'%(mindphi,maxdphi), 'kinematic limits for dphi')
+        dataframe = applyCut(dataframe, 'pair_mass > %f and pair_mass< %f'%(minzmass,maxzmass), 'kinematic limits for pair_mass')
     dataframe = applyCut(dataframe, 'abs(h1_pid)==211', 'leading hadrons are pions')    
     dataframe = applyCut(dataframe, 'h2_p>0.2 and h2_p<5.0', '0.2<h2_p<5.0')
     dataframe = applyCut(dataframe, 'h1_p>0.2 and h1_p<5.0', '0.2<h1_p<5.0')
