@@ -83,7 +83,7 @@ def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=Fa
     dataframe = applyCut(dataframe, 'inelasticity<0.85','inelasticity < 0.85')
     dataframe = applyCut(dataframe, 'abs(h1_pid)==211', 'h1_pid = pions (trigger)')
     dataframe = applyCut(dataframe, 'nu>2.2 and nu<4.2', '2.2 < nu <4.2')
-    
+    dataframe = applyCut(dataframe, 'h1_cm_pt>sqrt(0.005)', 'pT^2>0.005 GeV^2 for leading hadron')
     if max(dataframe['h1_th'])<np.pi:
         dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
     if (not isMC):
@@ -131,6 +131,7 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
     dataframe = applyCut(dataframe, 'h2_p>0.2 and h2_p<5.0', '0.2<h2_p<5.0')
     dataframe = applyCut(dataframe, 'h1_p>0.2 and h1_p<5.0', '0.2<h1_p<5.0')
 
+    dataframe = applyCut(dataframe, 'h2_cm_pt>sqrt(0.005) and h1_cm_pt>sqrt(0.005)', 'pT^2>0.005 GeV^2 for both hadrons')
     ## Theta cuts are not applied in the GiBUU case
     ## For GiBUU case is the only time isMC=True
     if (not isMC):
