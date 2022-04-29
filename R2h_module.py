@@ -20,6 +20,8 @@ def getRatio(df_A,df_D,df_trigger_A,df_trigger_D, variable='h2_z',trig_cut = 'h1
     error_conditional = np.multiply(ratio_conditional, np.sqrt(np.power(err_A,2.0) + np.power(err_D,2.0)))
     return ratio_conditional,error_conditional,x_conditional
 
+
+
 def getMultiplicity(df,df_trigger, variable='h2_z',trig_cut = 'h1_z>0.5', pair_cut='',minz=0.05,maxz=0.5,nbins=9, applyweight=False):
     norm = df_trigger.query(trig_cut).shape[0]
     bins= np.linspace(minz,maxz,nbins)
@@ -55,7 +57,8 @@ minz2=0.05
 
 
 p_thr=2.7
-Nphe_thr=15
+#Nphe_thr=15
+Nphe_thr=5
 Nphe_h1_cut='h1_Nphe> (%d*( (h1_z*nu*h1_z*nu-0.13957*0.13957)>(%f*%f) and h1_pid==211 ) -10000* (not ( (h1_z*nu*h1_z*nu-0.13957*0.13957)>(%f*%f) and h1_pid==211 ) ) )'%(Nphe_thr,p_thr,p_thr,p_thr,p_thr)
 Nphe_h2_cut='h2_Nphe> (%d*( (h2_p*nu*h2_z*nu-0.13957*0.13957)>(%f*%f) and h2_pid==211 ) -10000* (not ( (h2_z*nu*h2_z*nu-0.13957*0.13957)>(%f*%f) and h2_pid==211 ) ) )'%(Nphe_thr,p_thr,p_thr,p_thr,p_thr)
 Chi2CC_h1_cut='h1_Chi2CC < (0.08726*( (h1_z*nu*h1_z*nu-0.13957*0.13957)>(%f*%f) and h1_pid==211 ) +10000* (not ( (h1_z*nu*h1_z*nu-0.13957*0.13957)>(%f*%f) and h1_pid==211 ) ) )'%(p_thr,p_thr,p_thr,p_thr)
@@ -64,12 +67,12 @@ StatCC_h1_cut='h1_StatCC>((( (h1_z*nu*h1_z*nu-0.13957*0.13957)>(%f*%f) and h1_pi
 StatCC_h2_cut='h2_StatCC>((( (h2_z*nu*h2_z*nu-0.13957*0.13957)>(%f*%f) and h2_pid==211 ) -1 ))'%(p_thr,p_thr)
 
 trigger_cut_nom   ='h1_z>0.5 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and h1_FidCutPiPlus==1 and %s and %s and %s  '%(Nphe_h1_cut, Chi2CC_h1_cut,StatCC_h1_cut)
-pair_cut_nom  ='h1_z>0.5 and abs(h2_deltaZ)<3.0 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and %s and %s and %s and %s and %s and %s and h1_FidCutPiPlus==1 and h2_FidCutPiPlus==1 and (h1_z+h2_z)<1.0'%(Nphe_h1_cut, Nphe_h2_cut,Chi2CC_h1_cut,Chi2CC_h2_cut,StatCC_h1_cut, StatCC_h2_cut)
+pair_cut_nom  ='h1_z>0.5 and abs(h2_deltaZ)<3.0 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and %s and %s and %s and %s and %s and %s and h1_FidCutPiPlus==1 and h2_FidCutPiPlus==1 and (h1_p+h2_p)/nu<1.0'%(Nphe_h1_cut, Nphe_h2_cut,Chi2CC_h1_cut,Chi2CC_h2_cut,StatCC_h1_cut, StatCC_h2_cut)
 
 pair_cut_nom_pi_p  ='h1_z>0.5 and abs(h2_deltaZ)<3.0 and abs(h1_deltaZ)<3.0 and TargType!=0 and SampFracEl25==1 and h1_FidCutPiPlus==1 and h2_FidCutPiPlus==1 and %s and %s and %s'%(Nphe_h1_cut,Chi2CC_h1_cut,StatCC_h1_cut)
 
 
-def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=False): 
+def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=False, minPt=None): 
     dataframe = fullDataframe
     if(dataframe.shape[0]>0):
         print ('Entries before cut ', dataframe.shape[0])
@@ -83,18 +86,55 @@ def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=Fa
     dataframe = applyCut(dataframe, 'inelasticity<0.85','inelasticity < 0.85')
     dataframe = applyCut(dataframe, 'abs(h1_pid)==211', 'h1_pid = pions (trigger)')
     dataframe = applyCut(dataframe, 'nu>2.2 and nu<4.2', '2.2 < nu <4.2')
+    
+    #different names for the same variable: h1_cm_pt and h1_pt
+    if 'h1_cm_pt' in dataframe.columns:
+        #dataframe = applyCut(dataframe, 'h1_cm_pt*cos(h1_cm_ph)<0.4', 'px in gamma* frame is <0.4 GeV')
+        if minPt is not None:
+            dataframe = applyCut(dataframe, f'h1_cm_pt>{minPt}', f'pt>{minPt} GeV')
+    elif 'h1_pt' in dataframe.columns:
+        #dataframe = applyCut(dataframe, 'h1_pt*cos(h1_cm_ph)<0.4', 'px in gamma* frame is <0.4 GeV')
+        if minPt is not None:
+            dataframe = applyCut(dataframe, f'h1_pt>{minPt}', f'pt>{minPt} GeV')
     #dataframe = applyCut(dataframe, 'h1_cm_pt>sqrt(0.005)', 'pT^2>0.005 GeV^2 for leading hadron')
+    
+    #This cut is completely dumb
+    if("yes" in "is this a dumb cut? yes, it is" and not isMC):
+        h1_pz= "sqrt(h1_p**2-h1_cm_pt**2)*(2*(h1_rap>0)-1)"
+        theta_e="2*arcsin(sqrt(Q2/(4*5.014*(5.014-nu))))"
+        theta_q=f'arctan2((5.014-nu)*sin({theta_e}),(5.014-(5.014-nu)*cos({theta_e})))'
+        theta_qe=f"{theta_q}+{theta_e}"
+        e_pz = f"((5.014-nu)*cos(theta_qe))"
+        e_pt = f"((5.014-nu)*sin(theta_qe))"
+        df = dataframe
+        df['theta_e'] = df.eval(theta_e)
+        df['theta_qe'] = df.eval(theta_qe)
+        df['e_q_pz'] = df.eval(e_pz)
+        df['e_q_pt'] = df.eval(e_pt)
+        dtheta_epi1=f"""arccos((e_px*h1_px+e_py*h1_py+e_pz*h1_pz)
+                              /sqrt(e_px**2+e_py**2+e_pz**2)
+                              /sqrt(h1_px**2+h1_py**2+h1_pz**2))*{180/np.pi}""".replace("\n", "")
+
+        df['dtheta_epi1']  = df.eval(f"arccos((cos(theta_qe)*{h1_pz}+sin(theta_qe)*h1_cm_pt*cos(h1_cm_ph))/h1_p)*{180/np.pi}")
+        dataframe = applyCut(df, 'dtheta_epi1>0', '25 degree separation between pion and electron.  This is a dumb cut')
+    
+
+    
+    
     if max(dataframe['h1_th'])<np.pi:
         dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
     if (not isMC):
-        dataframe = applyCut(dataframe, 'h1_th<90 and h1_th>10', '10< h1_th<90')
-        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger')
+        #dataframe = applyCut(dataframe, 'h1_th<90 and h1_th>10', '10< h1_th<90')
+        #dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger')
+        dataframe = applyCut(dataframe, 'h1_th>10', '10< h1_th')
+        #dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211  & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger')
+        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th>25 & h1_p>0.7) | (h1_pid==-211 & h1_p>0.5 & h1_th>30) | (h1_pid==-211 & h1_th>40)','Theta/P fiducial region selected for trigger hadron')
         #dataframe = applyCut(dataframe, '(h1_pid==211) | (h1_pid==-211 & h1_th>25 & h1_th<90) | (h1_pid==-211 & h1_th<40 & h1_th>25 & h1_p>0.5)','Theta/P fiducial region selected for trigger')
         if (nomCuts):    dataframe = applyCut(dataframe,trigger_cut_nom, 'Nom cuts for the trigger applied')
         
     return dataframe
 
-def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton=False):
+def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton=False, minPt=None):
     print ('Starting election on dipion variables')
     if (isMC):
         print ('This is MC')
@@ -105,6 +145,11 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
     dataframe.eval('h1_e = h1_z*nu', inplace=True)
     dataframe.eval('h1_p = sqrt(h1_e*h1_e-0.13957*0.13957)', inplace=True)
     dataframe.eval('h2_e = h2_z*nu', inplace=True)
+    
+   
+    
+    
+    
     
     m_h2 = '(0.13957*(abs(h2_pid)==211) + .93827208816*(abs(h2_pid)==2212))'
     dataframe.eval(f'h2_p = sqrt(h2_e*h2_e-{m_h2}**2)', inplace=True)
@@ -122,7 +167,7 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
         dataframe = applyCut(dataframe, 'h2_pid==2212', 'secondary hadrons are protons') 
     else :
         dataframe = applyCut(dataframe, 'abs(h2_pid)==211', 'secondary hadrons are pions') 
-        dataframe = applyCut(dataframe, '(h1_z+h2_z)<1.0', '(h1_z+h2_z)<1.0')
+        #dataframe = applyCut(dataframe, '(h1_p+h2_p)/nu<1.0', '(h1_p+h2_p)/nu<1.0') #already in NomCuts
         dataframe = applyCut(dataframe, '(h1_pid*h2_pid)<0.', '(h1_pid*h2_pid)<0, opposite charge pions')
         dataframe = applyCut(dataframe, 'h2_z > %f and h2_z< %f'%(minz2,maxz2), 'kinematic limits for h2_z')
         dataframe = applyCut(dataframe, 'dphi > %f and dphi< %f'%(mindphi,maxdphi), 'kinematic limits for dphi')
@@ -130,7 +175,38 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
     dataframe = applyCut(dataframe, 'abs(h1_pid)==211', 'leading hadrons are pions')    
     dataframe = applyCut(dataframe, 'h2_p>0.2 and h2_p<5.0', '0.2<h2_p<5.0')
     dataframe = applyCut(dataframe, 'h1_p>0.2 and h1_p<5.0', '0.2<h1_p<5.0')
+    
+    if 'h1_cm_pt' in dataframe.columns:
+        #dataframe = applyCut(dataframe, 'h1_cm_pt*cos(h1_cm_ph)<0.4', 'px in gamma* frame is <0.4 GeV')
+        if minPt is not None:
+            dataframe = applyCut(dataframe, f'h1_cm_pt>{minPt} and h2_cm_pt>{minPt}', f'pt>{minPt} GeV')
+    elif 'h1_pt' in dataframe.columns:
+        #dataframe = applyCut(dataframe, 'h1_pt*cos(h1_cm_ph)<0.4', 'px in gamma* frame is <0.4 GeV')
+        if minPt is not None:
+            dataframe = applyCut(dataframe, f'h1_pt>{minPt} and h2_pt>{minPt}', f'pt>{minPt} GeV')
+    
+    #This cut is completely dumb
+    if("yes" in "is this a dumb cut? yes, it is" and not isMC):
+        h1_pz= "sqrt(h1_p**2-h1_cm_pt**2)*(2*(h1_rap>0)-1)"
+        theta_e="2*arcsin(sqrt(Q2/(4*5.014*(5.014-nu))))"
+        theta_q=f'arctan2((5.014-nu)*sin({theta_e}),(5.014-(5.014-nu)*cos({theta_e})))'
+        theta_qe=f"{theta_q}+{theta_e}"
+        e_pz = f"((5.014-nu)*cos(theta_qe))"
+        e_pt = f"((5.014-nu)*sin(theta_qe))"
+        df = dataframe
+        df['theta_e'] = df.eval(theta_e)
+        df['theta_qe'] = df.eval(theta_qe)
+        df['e_q_pz'] = df.eval(e_pz)
+        df['e_q_pt'] = df.eval(e_pt)
+        dtheta_epi1=f"""arccos((e_px*h1_px+e_py*h1_py+e_pz*h1_pz)
+                              /sqrt(e_px**2+e_py**2+e_pz**2)
+                              /sqrt(h1_px**2+h1_py**2+h1_pz**2))*{180/np.pi}""".replace("\n", "")
 
+        df['dtheta_epi1']  = df.eval(f"arccos((cos(theta_qe)*{h1_pz}+sin(theta_qe)*h1_cm_pt*cos(h1_cm_ph))/h1_p)*{180/np.pi}")
+        dataframe = applyCut(df, 'dtheta_epi1>0', '25 degree separation between pion and electron.  This is a dumb cut')
+
+    
+    
     #dataframe = applyCut(dataframe, 'h2_cm_pt>sqrt(0.005) and h1_cm_pt>sqrt(0.005)', 'pT^2>0.005 GeV^2 for both hadrons')
     ## Theta cuts are not applied in the GiBUU case
     ## For GiBUU case is the only time isMC=True
@@ -140,11 +216,20 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
             dataframe['h2_th'] = dataframe['h2_th']*180/np.pi
         if max(dataframe['h1_th'])<np.pi:
             dataframe['h1_th'] = dataframe['h1_th']*180/np.pi
-            
-        dataframe = applyCut(dataframe, 'h2_th<90 and h2_th>10', '10<h2_th<90')
-        dataframe = applyCut(dataframe, '(h2_pid>0) | (h2_pid==-211 & h2_th<90 & h2_th>25 & (h2_p>0.5 | h2_th>40))','Theta/P fiducial region selected for secondary hadron')
-        dataframe = applyCut(dataframe, 'h1_th<90 and h1_th>10', '10< h1_th<90')
-        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger hadron')
+        #dataframe = applyCut(dataframe, 'h1_cm_pt*cos(h1_cm_ph)<0.4', 'px in gamma* frame is <0.4 GeV')
+
+
+        #dataframe = applyCut(dataframe, 'h2_th<90 and h2_th>10', '10<h2_th<90')
+        #dataframe = applyCut(dataframe, '(h2_pid>0) | (h2_pid==-211 & h2_th<90 & h2_th>25 & (h2_p>0.5 | h2_th>40))','Theta/P fiducial region selected for secondary hadron')
+        #dataframe = applyCut(dataframe, 'h1_th<90 and h1_th>10', '10< h1_th<90')
+        #dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th<90 & h1_th>25 & (h1_p>0.5 | h1_th>40))','Theta/P fiducial region selected for trigger hadron')
+        
+        dataframe = applyCut(dataframe, 'h2_th>10', '10<h2_th')
+        dataframe = applyCut(dataframe, '(h2_pid>0) | (h2_pid==-211 & h2_th>25 & h2_p>0.7) |(h2_pid==-211 & h2_p>0.5 & h1_th>30) | (h2_pid==-211 & h2_th>40)','Theta/P fiducial region selected for secondary hadron')
+        dataframe = applyCut(dataframe, ' h1_th>10', '10< h1_th')
+        dataframe = applyCut(dataframe, '(h1_pid>0) | (h1_pid==-211 & h1_th>25 & h1_p>0.7) |(h1_pid==-211 & h1_p>0.5 & h1_th>30) | (h1_pid==-211 & h1_th>40)','Theta/P fiducial region selected for trigger hadron')
+        
+        
         if (nomCuts):
             if h2Proton:
                 dataframe = applyCut(dataframe, pair_cut_nom_pi_p, 'Nom cuts for the pair applied (pi p)')
