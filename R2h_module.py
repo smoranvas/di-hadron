@@ -99,7 +99,7 @@ def applyCuts(fullDataframe,name='default',isMC=False,isTrigger=True, nomCuts=Fa
     #dataframe = applyCut(dataframe, 'h1_cm_pt>sqrt(0.005)', 'pT^2>0.005 GeV^2 for leading hadron')
     
     #This cut is completely dumb
-    if("yes" in "is this a dumb cut? yes, it is" and not isMC):
+    if("no" in "is this a dumb cut? yes, it is" and not isMC):
         h1_pz= "sqrt(h1_p**2-h1_cm_pt**2)*(2*(h1_rap>0)-1)"
         theta_e="2*arcsin(sqrt(Q2/(4*5.014*(5.014-nu))))"
         theta_q=f'arctan2((5.014-nu)*sin({theta_e}),(5.014-(5.014-nu)*cos({theta_e})))'
@@ -186,7 +186,7 @@ def applyCutsPair(fullDataframe,name='default',isMC=False,nomCuts=False,h2Proton
             dataframe = applyCut(dataframe, f'h1_pt>{minPt} and h2_pt>{minPt}', f'pt>{minPt} GeV')
     
     #This cut is completely dumb
-    if("yes" in "is this a dumb cut? yes, it is" and not isMC):
+    if("no" in "is this a dumb cut? yes, it is" and not isMC):
         h1_pz= "sqrt(h1_p**2-h1_cm_pt**2)*(2*(h1_rap>0)-1)"
         theta_e="2*arcsin(sqrt(Q2/(4*5.014*(5.014-nu))))"
         theta_q=f'arctan2((5.014-nu)*sin({theta_e}),(5.014-(5.014-nu)*cos({theta_e})))'
