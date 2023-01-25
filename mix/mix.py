@@ -36,6 +36,7 @@ def mixed_quantities(E, e_px, e_py, e_pz, h_px, h_py, h_pz,h_pid, h2_px, h2_py, 
     
     di['h2_cm_rap'] = hadron2.Rapidity()
     di['h2_cm_ph'] = hadron2.Phi()
+    di['h2_cm_pt'] = hadron2.Pt()
     
     target.RotateZ(-cm.Phi());
     target.RotateY(-cm.Theta());
@@ -210,7 +211,7 @@ def mix_from_singles(df, binvars=''.split(), nbins=1,maxEvents=None, nAssocPerTr
                 if useOriginalPT:
                     d_alt=mixed_quantities(df.E[j], df.e_px[j], df.e_py[j], df.e_pz[j],df.h_px[i], df.h_py[i], df.h_pz[i],df.h_pid[i],
                                                 df.h_px[j], df.h_py[j], df.h_pz[j],df.h_pid[j])
-                    d["h2_cm_pt"][-1]=d_alt['h2_cm_pt']
+                    di["h2_cm_pt"]=d_alt['h2_cm_pt']
                 
                 
             else:
