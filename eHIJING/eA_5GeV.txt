@@ -1,0 +1,44 @@
+# random seed, seed=0 --> time-dependent seed
+Random:setSeed = on
+Random:seed = 0
+
+# beam info (make sure the order matches the main program)
+#Beams:idA = 2212 #determined from the A and Z command line arguments
+Beams:idB = 11
+Beams:frameType = 2
+Beams:eA = 0 # proton beam energy (+,0,0,+) [GeV], E=max(M, eA)
+Beams:eB = 5 # electron beam energy (+,0,0,-) [GeV]
+
+
+
+# Phasespace cut:
+# Minimum hard scale squared [GeV^2]
+PhaseSpace:Q2Min = 1.0
+#PhaseSpace:Q2Max = 4.0
+PhaseSpace:mHatMin = 0
+PhaseSpace:pTHatMinDiverge = 0.5
+
+# >>>>>> Do not change the following without a good reason...
+# PDF:lepton = on
+# PhotonParton:all = on
+
+
+# WeakBosonExchange:all = on
+WeakBosonExchange:ff2ff(t:gmZ) = on
+WeakBosonExchange:ff2ff(t:W) = off
+
+SpaceShower:pTmaxMatch = 2
+SpaceShower:dipoleRecoil = off
+
+HadronLevel:all = off
+HadronLevel:decay = off
+
+Tune:pp = 19
+PDF:pset = 12
+PDF:useHard = on
+PDF:useHardNPDFA = on
+# <<<<<< Do not change aboves without a good reason...
+
+# eHIJING Switch
+eHIJING:all = on
+eHIJING:Mode = 1
