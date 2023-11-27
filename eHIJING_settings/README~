@@ -1,0 +1,10 @@
+after compiling eHIJING, copy the files in this folder into the eHIJING-examples folder.
+(I have not enclosed the code for the eHIJING library, since the authors do not want to make
+it public until they are ready for that to happen.)
+Then compile the enclosed executable by running ./compile.sh
+
+Adjust the positions where you want to write files to in run_eHIJING.sh
+Then run ./slurm_eHIJING.sh to run multiple jobs on the slurm system for D, C, Fe, and Pb
+
+After this is done, run "python3 parsePairs_ehijing.py /path/to/output/A/\*.dat eA_eHIJING.pkl"
+replacing the first argument with the path to the output files of eHIJING and the second with the name of the output file for each target type

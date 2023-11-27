@@ -1,0 +1,12 @@
+
+#other settings
+Tune:pp = 19
+
+#Harut's tuning:
+BeamRemnants:primordialKT=on
+BeamRemnants:primordialKTremnant=0.64 # corresponds to PARP(91)
+#BeamRemnants:primordialKTsoft=0.64 # corresponds to PARP(91)
+#BeamRemnants:primordialKThard=0.64 # corresponds to PARP(91)
+StringPT:sigma=0.5 # corresponds to PARJ(21)
+StringFlav:mesonUDvector=0.7 # corresponds to PARJ(11)
+StringFlav:mesonSvector=0.75 # corresponds to PARJ(12)
