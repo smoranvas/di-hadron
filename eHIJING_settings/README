@@ -1,3 +1,26 @@
+
+First, install HEPMC3
+  wget http://hepmc.web.cern.ch/hepmc/releases/HepMC3-3.2.6.tar.gz
+  tar -xzf HepMC3-3.2.6.tar.gz
+  mkdir hepmc3-build
+  cd hepmc3-build
+  cmake -DCMAKE_INSTALL_PREFIX=../hepmc3-install   \
+        -DHEPMC3_ENABLE_ROOTIO:BOOL=OFF            \
+        -DHEPMC3_ENABLE_PROTOBUFIO:BOOL=OFF        \
+        -DHEPMC3_ENABLE_TEST:BOOL=OFF              \
+        -DHEPMC3_INSTALL_INTERFACES:BOOL=ON        \
+        -DHEPMC3_BUILD_STATIC_LIBS:BOOL=OFF        \
+        -DHEPMC3_BUILD_DOCS:BOOL=OFF     \
+        -DHEPMC3_ENABLE_PYTHON:BOOL=ON   \
+        -DHEPMC3_PYTHON_VERSIONS=2.7     \
+        -DHEPMC3_Python_SITEARCH27=../hepmc3-install/lib/python2.7/site-packages \
+        ../HepMC3-3.2.6
+  make
+  make install
+Then install eHIJING
+./configure --with-hepmc3-lib=../hepmc3-install/lib64/ --with-hepmc3-include=../hepmc3-install/include/ ; make
+
+
 after compiling eHIJING, copy the files in this folder into the eHIJING-examples folder.
 (I have not enclosed the code for the eHIJING library, since the authors do not want to make
 it public until they are ready for that to happen.  However, you can just ask them for it)
