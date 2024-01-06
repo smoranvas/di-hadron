@@ -10,15 +10,15 @@
 
 
 namespace Rivet {
-  /// @brief Correlations between a leading pi+ and a subleading pi- in a nuclear DIS reaction
-  class correlations : public Analysis {
+  /// @brief Correlations between a leading pi+ and a subleading proton in a nuclear DIS reaction
+  class pion_proton_correlations : public Analysis {
   private:
     double deg_to_eta(double theta){
       return -log(tan(theta*M_PI/180/2.));
     }
   public:
     /// Constructor
-    DEFAULT_RIVET_ANALYSIS_CTOR(correlations);
+    DEFAULT_RIVET_ANALYSIS_CTOR(pion_proton_correlations);
     /// Book histograms and initialise projections before the run
     void init() {
 
@@ -34,7 +34,7 @@ namespace Rivet {
       //const DISFinalState& disfs = declare(DISFinalState(DISFinalState::BoostFrame::LAB), "DISFS");
 
       IdentifiedFinalState pips_ifs(211);
-      IdentifiedFinalState pims_ifs(-211);
+      IdentifiedFinalState protons_ifs(2212);
       
       // TODO write cuts for the leading and subleading pions
       /*auto momentum= sqrt(Cut::E*Cut::E-Cut::mass*Cut::mass);
@@ -51,7 +51,7 @@ namespace Rivet {
       DISFinalState pims_dis(DISFinalState::BoostFrame::LAB, pims_cut);*/
 
       declare(pips_ifs, "pi+");
-      declare(pims_ifs, "pi-");
+      declare(protons_ifs, "p");
       
 
       // Book histograms
@@ -120,36 +120,36 @@ namespace Rivet {
       //convert deg to rad
       double deg=M_PI/180;
       // Extract subleading pi-s
-      auto pims = apply<IdentifiedFinalState>(event, "pi-").particles();
+      auto protons = apply<IdentifiedFinalState>(event, "p").particles();
       for(auto pip: pips) {
 	//cout << "pip"<<endl;
 	double z1=pip.E()/nu;
 	//do it this way so that it is independent of how the electron direction is defined (+z or -z).  
 	double theta = pip.momentum().angle(dk.beamLepton().momentum());
-	if (z1<0.5 || theta<10*deg)
+                                                                                                       
+	pip=pip.transformBy(dk.boostBreit());
+	double pt1=pip.pt();
+	if (z1<0.5 || theta<10*deg || pt1<0.25)
 	  continue;
 	//cout << "pip passes cuts"<<endl;
-	pip=pip.transformBy(dk.boostBreit());
 	_n_leading+=1;
-	double pt1=pip.pt();
 	_hist_pt1->fill(pt1);
-	for(auto pim:pims) {
-	  double z2=pim.E()/nu;
-	  double theta=pim.momentum().angle(dk.beamLepton().momentum());
-	  if(z2<0.05 or z2>0.45 or
-	     not ((theta>25*deg and pim.p()>0.7) or (pim.p()>0.5 and theta>30*deg) or (theta>40*deg and pim.p()>0.35 )))
+	for(auto proton:protons) {
+	  double p=proton.p();
+	  double theta=proton.momentum().angle(dk.beamLepton().momentum());
+	  proton=proton.transformBy(dk.boostBreit());
+	  double pt2=proton.pt();
+	  if(p<0.2 or p>3.0 or theta<10*deg or pt2<0.25)
 	    continue;
-	  //cout << "found pim that passes cuts" << endl;
-	  pim=pim.transformBy(dk.boostBreit());
-	  double dphi=pip.phi()-pim.phi();
+	  //cout << "found proton that passes cuts" << endl;
+	  double dphi=pip.phi()-proton.phi();
 	  if (dphi>M_PI)
 	    dphi-=2*M_PI;
 	  if (dphi<-M_PI)
             dphi+=2*M_PI;
 	  dphi=abs(dphi);
 	  _hist_dphi->fill(dphi);
-	  double dy=pip.rap()-pim.rap();
-	  double pt2=pim.pt();
+	  double dy=pip.rap()-proton.rap();
 	  _hist_dphi_dy->fill(dphi,dy);
 	  _hist_dphi_pt1->fill(dphi,pt1);
           _hist_dphi_pt2->fill(dphi,pt2);
@@ -188,7 +188,7 @@ namespace Rivet {
 
 
   // The hook for the plugin system
-  DECLARE_RIVET_PLUGIN(correlations);
+  DECLARE_RIVET_PLUGIN(pion_proton_correlations);
 
 
 }
