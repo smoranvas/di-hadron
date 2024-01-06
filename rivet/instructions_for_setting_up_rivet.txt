@@ -1,0 +1,14 @@
+#first get the docker image containing rivet and pythia
+docker pull electronioncollider/pythia-eic-tutorial
+#then create the following aliases:
+export RIVET_CONTAINER_NAME=electronioncollider/pythia-eic-tutorial
+alias rivet='docker run -i  --rm  -u `id -u $USER`:`id -g` -v $PWD:$PWD -w $PWD $RIVET_CONTAINER_NAME rivet'
+alias rivet-mkanalysis='docker run -i  --rm  -u `id -u $USER`:`id -g` -v $PWD:$PWD -w $PWD $RIVET_CONTAINER_NAME rivet-mkanalysis'
+alias rivet-build='docker run -i  --rm  -u `id -u $USER`:`id -g` -v $PWD:$PWD -w $PWD $RIVET_CONTAINER_NAME rivet-build'
+alias rivet-mkhtml='docker run -i  --rm  -u `id -u $USER`:`id -g` -v $PWD:$PWD -w $PWD $RIVET_CONTAINER_NAME rivet-mkhtml'
+
+# to build a plugin:
+rivet-build correlations.cc
+
+# test this plugin (for a specific input file)
+rivet -a correlations --pwd -o output.yoda eD_64.hepmc 
