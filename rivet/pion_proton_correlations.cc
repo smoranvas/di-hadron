@@ -65,7 +65,7 @@ namespace Rivet {
       book(_n_leading, "n_leading");
 
       
-      vector<double> dybins={-0.5, 0.5, 1.5,2.5};
+      vector<double> dybins={0.0, 1.0, 2.0,3.0};
       vector<double> pt1bins={0.25, 0.4, 0.6, 1.0};
       vector<double> pt2bins={0.25, 0.4, 0.6, 0.8};
       
@@ -139,7 +139,7 @@ namespace Rivet {
 	  double theta=proton.momentum().angle(dk.beamLepton().momentum());
 	  proton=proton.transformBy(dk.boostBreit());
 	  double pt2=proton.pt();
-	  if(p<0.2 or p>3.0 or theta<10*deg or pt2<0.25)
+	  if(p<0.2 or p>2.8 or theta<10*deg or pt2<0.25)
 	    continue;
 	  //cout << "found proton that passes cuts" << endl;
 	  double dphi=pip.phi()-proton.phi();
