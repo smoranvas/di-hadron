@@ -62,7 +62,7 @@ namespace Rivet {
 	dphibins.push_back((M_PI*i)/nbins_dphi);
       
       book(_hist_dphi, "dphi", dphibins);
-      _n_leading=0.0;
+      book(_n_leading, "n_leading");
 
       
       vector<double> dybins={-0.5, 0.5, 1.5,2.5};
@@ -131,7 +131,7 @@ namespace Rivet {
 	if (z1<0.5 || theta<10*deg || pt1<0.25)
 	  continue;
 	//cout << "pip passes cuts"<<endl;
-	_n_leading+=1;
+	_n_leading->fill();
 	_hist_pt1->fill(pt1);
 	for(auto pim:pims) {
 	  double z2=pim.E()/nu;
@@ -181,7 +181,7 @@ namespace Rivet {
     Histo2DPtr _hist_dphi_dy;
     Histo2DPtr _hist_dphi_pt1;
     Histo2DPtr _hist_dphi_pt2;
-    double _n_leading;
+    CounterPtr _n_leading;
     //used for normalizing the pt1-sliced histogram
     Histo1DPtr _hist_pt1;
   };
