@@ -126,7 +126,7 @@ namespace Rivet {
 	double z1=pip.E()/nu;
 	//do it this way so that it is independent of how the electron direction is defined (+z or -z).  
 	double theta = pip.momentum().angle(dk.beamLepton().momentum());
-	pip=pip.transformBy(dk.boostBreit());
+	pip=pip.transformBy(dk.boostHCM());
 	double pt1=pip.pt();
 	if (z1<0.5 || theta<10*deg || pt1<0.25)
 	  continue;
@@ -136,7 +136,7 @@ namespace Rivet {
 	for(auto pim:pims) {
 	  double z2=pim.E()/nu;
 	  double theta=pim.momentum().angle(dk.beamLepton().momentum());
-	  pim=pim.transformBy(dk.boostBreit());
+	  pim=pim.transformBy(dk.boostHCM());
 	  double pt2=pim.pt();
 	  if(z2<0.05 or z2>0.45 or pt2<0.25 or
 	     not ((theta>25*deg and pim.p()>0.7) or (pim.p()>0.5 and theta>30*deg) or (theta>40*deg and pim.p()>0.35 )))

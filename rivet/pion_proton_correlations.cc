@@ -65,7 +65,7 @@ namespace Rivet {
       book(_n_leading, "n_leading");
 
       
-      vector<double> dybins={0.0, 1.0, 2.0,3.0};
+      vector<double> dybins={0.2, 0.7, 1.2, 1.7, 2.2, 2.7};
       vector<double> pt1bins={0.25, 0.4, 0.6, 1.0};
       vector<double> pt2bins={0.25, 0.4, 0.6, 0.8};
       
@@ -127,7 +127,7 @@ namespace Rivet {
 	//do it this way so that it is independent of how the electron direction is defined (+z or -z).  
 	double theta = pip.momentum().angle(dk.beamLepton().momentum());
                                                                                                        
-	pip=pip.transformBy(dk.boostBreit());
+	pip=pip.transformBy(dk.boostHCM());
 	double pt1=pip.pt();
 	if (z1<0.5 || theta<10*deg || pt1<0.25)
 	  continue;
@@ -137,7 +137,7 @@ namespace Rivet {
 	for(auto proton:protons) {
 	  double p=proton.p();
 	  double theta=proton.momentum().angle(dk.beamLepton().momentum());
-	  proton=proton.transformBy(dk.boostBreit());
+	  proton=proton.transformBy(dk.boostHCM());
 	  double pt2=proton.pt();
 	  if(p<0.2 or p>2.8 or theta<10*deg or pt2<0.25)
 	    continue;
@@ -150,6 +150,8 @@ namespace Rivet {
 	  dphi=abs(dphi);
 	  _hist_dphi->fill(dphi);
 	  double dy=pip.rap()-proton.rap();
+	  //dy*=-1; // I define the +z axis to the direction of the virtual photon, rather than minus that direction.  
+	  //cout << "dy=" << dy << endl;
 	  _hist_dphi_dy->fill(dphi,dy);
 	  _hist_dphi_pt1->fill(dphi,pt1);
           _hist_dphi_pt2->fill(dphi,pt2);
