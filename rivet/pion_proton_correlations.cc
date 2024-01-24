@@ -126,7 +126,7 @@ namespace Rivet {
 	double z1=pip.E()/nu;
 	//do it this way so that it is independent of how the electron direction is defined (+z or -z).  
 	double theta = pip.momentum().angle(dk.beamLepton().momentum());
-                                                                                                       
+	double p1=pip.p();
 	pip=pip.transformBy(dk.boostHCM());
 	double pt1=pip.pt();
 	if (z1<0.5 || theta<10*deg || pt1<0.25)
@@ -139,7 +139,7 @@ namespace Rivet {
 	  double theta=proton.momentum().angle(dk.beamLepton().momentum());
 	  proton=proton.transformBy(dk.boostHCM());
 	  double pt2=proton.pt();
-	  if(p<0.75 or p>2.8 or theta<10*deg or pt2<0.25)
+	  if(p<0.4 or p>2.8 or theta<10*deg or theta>60*deg or pt2<0.25)
 	    continue;
 	  //cout << "found proton that passes cuts" << endl;
 	  double dphi=pip.phi()-proton.phi();
