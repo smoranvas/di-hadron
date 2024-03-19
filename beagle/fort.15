@@ -1,0 +1,11 @@
+  *** Frmbrk: we are dealing with a bag of              NPEXPL,NCHRGD,N8BEFR,NUNSTB,ETOTEX,ECHCK,PXCHCK,PYCHCK,PZCHCK           7           5           0           0   17435.158413891215        1.0913936421275139E-011   6.8212102632969618E-013   9.9475983006414026E-013   4.5474735088646412E-012
+  Iares,Izres,          11           6
+  Nfrgm,Infrg,Izfrg,           1           1           0
+  Nfrgm,Infrg,Izfrg,           2           1           0
+  Nfrgm,Infrg,Izfrg,           3           0           1
+  Nfrgm,Infrg,Izfrg,           4           0           1
+  Nfrgm,Infrg,Izfrg,           5           0           1
+  Nfrgm,Infrg,Izfrg,           6           1           1
+  Nfrgm,Infrg,Izfrg,           7           2           2
+  *** Frmbrk_f:energy or momentum conservation failure:
+  NPEXPL,NCHRGD,N8BEFR,NUNSTB,ETOTEX,ECHCK,PXCHCK,PYCHCK,PZCHCK           7           5           0           0   17435.158413891215        7.2759576141834259E-012   6.8212102632969618E-013   9.9475983006414026E-013   4.5474735088646412E-012
