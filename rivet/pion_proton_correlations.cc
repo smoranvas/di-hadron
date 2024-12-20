@@ -65,7 +65,7 @@ namespace Rivet {
       book(_n_leading, "n_leading");
 
       
-      vector<double> dybins={0.4, 0.8, 1.2, 1.6, 2.0, 2.4};
+      vector<double> dybins={0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0};
       vector<double> pt1bins={0.25, 0.4, 0.6, 1.0};
       vector<double> pt2bins={0.25, 0.4, 0.6, 0.8};
       
@@ -79,6 +79,7 @@ namespace Rivet {
 
     /// Perform the per-event analysis
     void analyze(const Event& event) {
+      double weight=event.weight();
       // Get the DIS kinematics
       const DISKinematics& dk = apply<DISKinematics>(event, "Kinematics");
       if ( dk.failed() ) return;
@@ -102,6 +103,9 @@ namespace Rivet {
       // Momentum of the scattered lepton
       const DISLepton& dl = apply<DISLepton>(event,"Lepton");
       if ( dl.failed() ) return;
+      
+      auto CM = (dk.beamLepton().momentum()+dk.beamHadron().momentum()-dk.scatteredLepton().momentum());
+      double dycm= 0.5*log((CM.E()+CM.p())/(CM.E()-CM.p()));
       //cout << "found dis electron"<<endl;
       //const FourMomentum leptonMom = dl.out();
       //const double ptel = leptonMom.pT();
@@ -121,6 +125,8 @@ namespace Rivet {
       double deg=M_PI/180;
       // Extract subleading pi-s
       auto protons = apply<IdentifiedFinalState>(event, "p").particles();
+      double ptmin=0.070;
+      double pmin=0.350;
       for(auto pip: pips) {
 	//cout << "pip"<<endl;
 	double z1=pip.E()/nu;
@@ -129,7 +135,7 @@ namespace Rivet {
 	double p1=pip.p();
 	pip=pip.transformBy(dk.boostHCM());
 	double pt1=pip.pt();
-	if (z1<0.5 || theta<10*deg || pt1<0.25)
+	if (z1<0.5 || theta<10*deg || pt1<ptmin)
 	  continue;
 	//cout << "pip passes cuts"<<endl;
 	_n_leading->fill();;
@@ -139,7 +145,7 @@ namespace Rivet {
 	  double theta=proton.momentum().angle(dk.beamLepton().momentum());
 	  proton=proton.transformBy(dk.boostHCM());
 	  double pt2=proton.pt();
-	  if(p<0.4 or p>2.8 or theta<10*deg or theta>60*deg or pt2<0.25)
+	  if(p<pmin or p>2.8 or theta<10*deg or pt2<ptmin)
 	    continue;
 	  //cout << "found proton that passes cuts" << endl;
 	  double dphi=pip.phi()-proton.phi();
@@ -148,13 +154,14 @@ namespace Rivet {
 	  if (dphi<-M_PI)
             dphi+=2*M_PI;
 	  dphi=abs(dphi);
-	  _hist_dphi->fill(dphi);
+	  _hist_dphi->fill(dphi, weight);
 	  double dy=pip.rap()-proton.rap();
+	  double dystar=dy-dycm;
 	  //dy*=-1; // I define the +z axis to the direction of the virtual photon, rather than minus that direction.  
 	  //cout << "dy=" << dy << endl;
-	  _hist_dphi_dy->fill(dphi,dy);
-	  _hist_dphi_pt1->fill(dphi,pt1);
-          _hist_dphi_pt2->fill(dphi,pt2);
+	  _hist_dphi_dy->fill(dphi,dy, weight);
+	  _hist_dphi_pt1->fill(dphi,pt1, weight);
+          _hist_dphi_pt2->fill(dphi,pt2, weight);
 	    
 	}
 	
