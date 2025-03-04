@@ -1,15 +1,15 @@
-import uproot3,pandas as pd
+import uproot,pandas as pd
 
 #create single-tree root file
 def to_root(df,filename, treename):
-    with uproot3.recreate(filename) as f:
+    with uproot.recreate(filename) as f:
         f[treename] = uproot3.newtree({col:df[col].dtype for col in df.columns})
         f[treename].extend(dict(df))
 
 #create root file with multiple trees:
 # d is a map of tree name to data frames {"tree1":df1, "tree2":df2 ... etc}
 def to_root_multi(filename, d):
-    with uproot3.recreate(filename) as f:
+    with uproot.recreate(filename) as f:
         for treename in d.keys():
             df = d[treename]
             f[treename] = uproot3.newtree({col:df[col].dtype for col in df.columns})
@@ -20,7 +20,7 @@ def read_root(filename,treename=None,N=None):
     if type(filename) != str:
         return pd.concat([read_root(f,treename,N) for f in filename])
         
-    with uproot3.open(filename) as f:
+    with uproot.open(filename) as f:
         if treename is None:
             if len(f.keys()) == 1:
                 treename = f.keys()[0]
