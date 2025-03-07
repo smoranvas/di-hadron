@@ -49,7 +49,7 @@ PARP(18)=0.40 ! hermes PARP(18)=0.17
 PARP(81)=1.9
 PARP(89)=1800
 PARP(90)=0.16
-PARP(91)=0.32 ! rms kt D=2.0, Hermes=0.4, tuned by Mark 0.32
+! PARP(91)=0.32 ! rms kt D=2.0, Hermes=0.4, tuned by Mark 0.32.  Overwritten by Ahmed and Harut
 PARP(93)=5.
 PARP(97)=6.0  ! D=1.0, tuned by Mark 6.0
 PARP(99)=0.40 ! D=1.0, Hermes=0.4 kt inside of photon 
@@ -68,13 +68,13 @@ PARP(166)=0.67597 ! PARP165/166 are linked to MSTP17 as R_rho of HERMES is used
 ! ----------- Now come all the switches for Jetset -----------
 PARJ(1)=0.100
 PARJ(2)=0.300
-PARJ(11)=0.5
-PARJ(12)=0.6
-PARJ(21)= 0.32 ! fragpt width D=0.36, Hermes=0.40, Mark=0.32
+! PARJ(11)=0.5 ! overwritten by Ahmed and Harut
+! PARJ(12)=0.6 ! Overwritten by Ahmed and Harut
+! PARJ(21)= 0.32 ! fragpt width D=0.36, Hermes=0.40, Mark=0.32.  Overwritten by Ahmed and Harut
 PARJ(32)=1.0
 PARJ(33)= 0.80
-PARJ(41)= 0.30
-PARJ(42)= 0.58
+! PARJ(41)= 0.30 ! over written by Carolina
+! PARJ(42)= 0.58 ! over written by Carolina
 PARJ(45)= 0.5
 !----------------------------------------------------------------------
 MSTJ(1)=1   !0 no fragmentation,1 lund string model
@@ -126,3 +126,14 @@ CKIN(67)=0.
 CKIN(68)=-1. 
 CKIN(77)=2.0
 CKIN(78)=-1.
+! ----Harut and Ahmed's tweaks----
+PARP(91)=0.64
+! PARJ(21)=0.50  ! overwritten by Carolina
+! PARJ(11)=0.7   ! overwritten by Carolina
+! PARJ(12)=0.75  ! overwritten by Carolina
+! ----Carolina's tweaks---
+PARJ(11)=0.8
+PARJ(12)=0.85
+PARJ(41)=0.6
+PARJ(42)=0.1
+PARJ(21)=0.6
