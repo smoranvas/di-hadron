@@ -4,6 +4,18 @@
 #include "Rivet/Projections/DISKinematics.hh"
 #include "Rivet/Projections/DISFinalState.hh"
 
+// ----------------------------------------------------------------------
+// Compatibility shim for different Rivet versions
+// ----------------------------------------------------------------------
+#if !defined(RIVET_DEFAULT_ANALYSIS_CTOR) && defined(DEFAULT_RIVET_ANALYSIS_CTOR)
+  #define RIVET_DEFAULT_ANALYSIS_CTOR(NAME) DEFAULT_RIVET_ANALYSIS_CTOR(NAME)
+#endif
+
+#if !defined(RIVET_DECLARE_PLUGIN) && defined(DECLARE_RIVET_PLUGIN)
+  #define RIVET_DECLARE_PLUGIN(NAME) DECLARE_RIVET_PLUGIN(NAME)
+#endif
+// ----------------------------------------------------------------------
+
 
 namespace Rivet {
 
@@ -140,6 +152,6 @@ public:
 };
 
 
-RIVET_DECLARE_PLUGIN(pion_proton_correlations);
+  RIVET_DECLARE_PLUGIN(pion_proton_correlations);
 
 }
